@@ -1,6 +1,6 @@
 const fs = require("fs");
 const http = require("http");
-const url = require("url");
+const { URL, URLSearchParams } = require("url");
 
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const productData = JSON.parse(data);
@@ -33,7 +33,10 @@ const replaceTemplate = (template, product) => {
 };
 
 const server = http.createServer((req, res) => {
-  const pathname = req.url;
+  const baseURL = "http://" + req.headers.host + "/";
+  const url = new URL(req.url, baseURL);
+  const pathname = url.pathname;
+  const reqProductId = +new URLSearchParams(url.searchParams).get("id");
 
   // overview page
   if (pathname === "/" || pathname === "/overview") {
@@ -53,7 +56,12 @@ const server = http.createServer((req, res) => {
 
     // product page
   } else if (pathname === "/product") {
-    res.end("This is products page");
+    const product = productData[reqProductId];
+    const productPage = replaceTemplate(templateProduct, product);
+    res.writeHead("200", {
+      "Content-type": "text/html",
+    });
+    res.end(productPage);
 
     // api
   } else if (pathname === "/api") {
