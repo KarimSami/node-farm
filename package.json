@@ -4,9 +4,12 @@
   "description": "Learning node.js",
   "main": "index.js",
   "dependencies": {
+    "slugify": "^1.6.4",
     "whatwg-url": "^11.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
